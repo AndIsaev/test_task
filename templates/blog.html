@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Блог автора {{ author.username }}{% endblock %}
+
+{% block content %}
+{% for post in posts %}
+        <div class="post">
+            <div class="post_name">{{ post.title }}</div>
+            <div class="post_text">{{ post.text|safe }}</div>
+            <div class="post_info">{{ post.author.username }}</div>
+        </div>
+{% endfor %}
+
+
+{% endblock %}
