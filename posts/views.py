@@ -1,5 +1,12 @@
-from django.urls import reverse
-from django.views.generic import ListView, DetailView, CreateView
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse, reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views.generic import (
+    ListView,
+    DetailView,
+    CreateView,
+    DeleteView)
 from .forms import PostForm
 from .models import Post, User
 
@@ -10,33 +17,12 @@ class IndexView(ListView):
     template_name = 'index.html'
     context_object_name = 'posts'
 
-    def get_context_data(self, **kwargs):
-        data = super().get_context_data(**kwargs)
-        return data
-
 
 class PostDetailView(DetailView):
     """View one post."""
     model = Post
     context_object_name = 'post'
     template_name = 'post.html'
-
-
-class BlogView(ListView):
-    """Personal blog for author"""
-    model = Post
-    template_name = 'blog.html'
-    context_object_name = 'posts'
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(object_list=object_list, **kwargs)
-        username = User.objects.get(username=self.request.user)
-        context['username'] = username
-        print()
-        print(username)
-
-
-        return context
 
 
 class CreateNewPost(CreateView):
@@ -55,5 +41,24 @@ class CreateNewPost(CreateView):
         return reverse('post_detail', kwargs={'pk': self.object.id})
 
 
+class BlogView(ListView):
+    """Personal blog for author"""
+    model = User
+    template_name = 'blog.html'
+    context_object_name = 'posts'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        author = User.objects.get(username=self.kwargs['username'])
+        context['author'] = author
+        posts = author.posts.all()
+        context['posts'] = posts
+        return context
 
 
+class PostDeleteView(LoginRequiredMixin, DeleteView):
+    """Delete post, permission only for author"""
+    model = Post
+    template_name = 'post.html'
+    form_class = PostForm
+    success_url = reverse_lazy('index')
