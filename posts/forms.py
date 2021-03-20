@@ -1,5 +1,5 @@
 from django import forms
-from posts.models import Post
+from posts.models import Post, Follow
 
 
 class PostForm(forms.ModelForm):
@@ -10,3 +10,9 @@ class PostForm(forms.ModelForm):
             "text": ("Напишите текст"),
             "title": ("Напишите заголовок"),
         }
+
+
+class FollowForm(forms.ModelForm):
+    class Meta:
+        model = Follow
+        fields = ["user"]

@@ -1,0 +1,23 @@
+<main role="main" class="container">
+    <div class="row">
+        <div class="col-md-3 mb-3 mt-1">
+            <div class="card">
+                <div class="card-body">
+                    <div class="h2">
+                        {{ author.username }}
+                    </div>
+                </div>
+                <form class="list-group list-group-flush" method="post" action="{% url 'follow' author.username %}">
+                {% csrf_token %}
+                    {% if author.username != request.user.username %}
+                        <button type="submit" class="btn btn-primary">
+                                Подписаться
+                        </button>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+

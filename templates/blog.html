@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
-
+{% load filters %}
 {% block title %}Блог автора {{ author.username }}{% endblock %}
 
 {% block content %}
+{% include "author.html" %}
 
     {% for post in posts %}
 

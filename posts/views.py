@@ -1,14 +1,13 @@
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
-from django.utils.decorators import method_decorator
 from django.views.generic import (
     ListView,
     DetailView,
     CreateView,
     DeleteView)
-from .forms import PostForm
-from .models import Post, User
+from .forms import PostForm, FollowForm
+from .models import Post, User, Follow
 
 
 class IndexView(ListView):
@@ -25,7 +24,7 @@ class PostDetailView(DetailView):
     template_name = 'post.html'
 
 
-class CreateNewPost(CreateView):
+class CreateNewPost(LoginRequiredMixin, CreateView):
     """Create new post."""
     model = Post
     form_class = PostForm
@@ -41,7 +40,7 @@ class CreateNewPost(CreateView):
         return reverse('post_detail', kwargs={'pk': self.object.id})
 
 
-class BlogView(ListView):
+class BlogViewList(ListView):
     """Personal blog for author"""
     model = User
     template_name = 'blog.html'
@@ -62,3 +61,27 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'post.html'
     form_class = PostForm
     success_url = reverse_lazy('index')
+
+
+class FollowView(LoginRequiredMixin, CreateView):
+    """View for subscription"""
+    # model = Follow
+    template_name = 'author.html'
+    form_class = FollowForm
+    success_url = reverse_lazy('index')
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     user = User.objects.get(username=self.request.user)
+    #     author = User.objects.get(username=self.kwargs['username'])
+    #     print(author, '-------------------------------------')
+    #
+    #     context['user'] = user
+    #     context['author'] = author
+    #     if user != author:
+    #         Follow.objects.get_or_create(user=user, author=author)
+    #     return context
+
+    # def get_success_url(self):
+    #     return redirect('index')
+
