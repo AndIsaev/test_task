@@ -1,3 +1,4 @@
+{% load filters %}
 <main role="main" class="container">
     <div class="row">
         <div class="col-md-3 mb-3 mt-1">
@@ -7,14 +8,18 @@
                         {{ author.username }}
                     </div>
                 </div>
-                <form class="list-group list-group-flush" method="post" action="{% url 'follow' author.username %}">
-                {% csrf_token %}
+                    {% csrf_token %}
                     {% if author.username != request.user.username %}
-                        <button type="submit" class="btn btn-primary">
-                                Подписаться
-                        </button>
+                        <li class="list-group-item">
+                        {% if following  %}
+                            <a class="btn btn-lg btn-light" href="{% url 'unfollow' author.username %}"
+                               role="button">Отписаться</a>
+                        {% else %}
+                            <a class="btn btn-lg btn-primary" href="{% url 'follow' author.username %}"
+                               role="button">Подписаться</a>
+                        {% endif %}
                     {% endif %}
-                </form>
+                    </li>
             </div>
         </div>
     </div>

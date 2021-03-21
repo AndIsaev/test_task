@@ -1,12 +1,13 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import (
     ListView,
     DetailView,
     CreateView,
-    DeleteView)
-from .forms import PostForm, FollowForm
+    DeleteView,
+    View)
+from .forms import PostForm
 from .models import Post, User, Follow
 
 
@@ -52,6 +53,8 @@ class BlogViewList(ListView):
         context['author'] = author
         posts = author.posts.all()
         context['posts'] = posts
+        following = author.following.count()
+        context['following'] = following
         return context
 
 
@@ -63,25 +66,37 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('index')
 
 
-class FollowView(LoginRequiredMixin, CreateView):
+class FollowView(LoginRequiredMixin, View):
     """View for subscription"""
-    # model = Follow
-    template_name = 'author.html'
-    form_class = FollowForm
-    success_url = reverse_lazy('index')
 
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     user = User.objects.get(username=self.request.user)
-    #     author = User.objects.get(username=self.kwargs['username'])
-    #     print(author, '-------------------------------------')
-    #
-    #     context['user'] = user
-    #     context['author'] = author
-    #     if user != author:
-    #         Follow.objects.get_or_create(user=user, author=author)
-    #     return context
+    def get(self, request, *args, **kwargs):
+        author = get_object_or_404(
+            User,
+            username=self.kwargs['username'])
+        if request.user != author:
+            Follow.objects.get_or_create(
+                user=request.user,
+                author=author)
 
-    # def get_success_url(self):
-    #     return redirect('index')
+        return redirect("blog", username=self.kwargs['username'])
 
+
+class UnFollowView(LoginRequiredMixin, View):
+    """View for unsubscribe"""
+
+    def get(self, request, *args, **kwargs):
+        subscribe = Follow.objects.filter(
+                user=request.user,
+                author=get_object_or_404(
+                    User,
+                    username=self.kwargs['username'])
+            )
+        subscribe.delete()
+        return redirect("blog", username=self.kwargs['username'])
+
+
+class FavoriteAuthors(ListView):
+    model = Post
+    template_name = 'favorite.html'
+    context_object_name = 'posts'
+    
