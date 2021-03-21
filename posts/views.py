@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import (
     ListView,
@@ -96,7 +96,14 @@ class UnFollowView(LoginRequiredMixin, View):
 
 
 class FavoriteAuthors(ListView):
-    model = Post
+    """View favorite authors"""
+    model = Follow
     template_name = 'favorite.html'
     context_object_name = 'posts'
-    
+
+    def get_queryset(self):
+        q = super().get_queryset()
+        authors = q.filter(user=self.request.user).values_list("author")
+        posts = Post.objects.filter(author__in=authors)
+
+        return posts
