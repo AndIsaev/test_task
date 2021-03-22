@@ -1,8 +1,9 @@
 from django import forms
-from posts.models import Post, Follow
+from posts.models import Post
 
 
 class PostForm(forms.ModelForm):
+    """Form post."""
     class Meta:
         model = Post
         fields = ["title", "text",]
@@ -12,7 +13,8 @@ class PostForm(forms.ModelForm):
         }
 
 
-class FollowForm(forms.ModelForm):
-    class Meta:
-        model = Follow
-        fields = ["user"]
+# class FollowForm(forms.ModelForm):
+#     class Meta:
+#         model = Follow
+#         fields = ["user"]
+

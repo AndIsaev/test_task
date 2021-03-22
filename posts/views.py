@@ -14,22 +14,22 @@ from .models import Post, User, Follow
 class IndexView(ListView):
     """Main page."""
     model = Post
-    template_name = 'index.html'
-    context_object_name = 'posts'
+    template_name = "index.html"
+    context_object_name = "posts"
 
 
 class PostDetailView(DetailView):
     """View one post."""
     model = Post
-    context_object_name = 'post'
-    template_name = 'post.html'
+    context_object_name = "post"
+    template_name = "post.html"
 
 
 class CreateNewPost(LoginRequiredMixin, CreateView):
     """Create new post."""
     model = Post
     form_class = PostForm
-    template_name = 'new_post.html'
+    template_name = "new_post.html"
 
     def form_valid(self, form):
         post = form.save(commit=False)
@@ -38,67 +38,71 @@ class CreateNewPost(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse('post_detail', kwargs={'pk': self.object.id})
+        return reverse("post_detail", kwargs={"pk": self.object.id})
 
 
 class BlogViewList(ListView):
-    """Personal blog for author"""
+    """Personal blog for author."""
     model = User
-    template_name = 'blog.html'
-    context_object_name = 'posts'
+    template_name = "blog.html"
+    context_object_name = "posts"
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=object_list, **kwargs)
-        author = User.objects.get(username=self.kwargs['username'])
-        context['author'] = author
+        author = User.objects.get(username=self.kwargs["username"])
+        context["author"] = author
         posts = author.posts.all()
-        context['posts'] = posts
+        context["posts"] = posts
         following = author.following.count()
-        context['following'] = following
+        context["following"] = following
         return context
 
 
 class PostDeleteView(LoginRequiredMixin, DeleteView):
-    """Delete post, permission only for author"""
+    """Delete post, permission only for author."""
     model = Post
-    template_name = 'post.html'
-    success_url = reverse_lazy('index')
+    template_name = "post.html"
+    success_url = reverse_lazy("index")
 
 
 class FollowView(LoginRequiredMixin, View):
-    """View for subscription"""
-
+    """View for subscription."""
     def get(self, request, *args, **kwargs):
         author = get_object_or_404(
             User,
-            username=self.kwargs['username'])
+            username=self.kwargs["username"])
         if request.user != author:
             Follow.objects.get_or_create(
                 user=request.user,
                 author=author)
 
-        return redirect("blog", username=self.kwargs['username'])
+        return redirect("blog", username=self.kwargs["username"])
 
 
 class UnFollowView(LoginRequiredMixin, View):
-    """View for unsubscribe"""
-
+    """View for unsubscribe."""
     def get(self, request, *args, **kwargs):
         subscribe = Follow.objects.filter(
                 user=request.user,
                 author=get_object_or_404(
                     User,
-                    username=self.kwargs['username'])
+                    username=self.kwargs["username"])
             )
+
+        author = User.objects.get(username=self.kwargs["username"])
+        user = User.objects.get(username=request.user)
+        read_posts = user.read_post.filter(author=author)
+        for noted_element in read_posts:
+            user.read_post.remove(noted_element)
         subscribe.delete()
-        return redirect("blog", username=self.kwargs['username'])
+        return redirect("blog", username=self.kwargs["username"])
 
 
 class FavoriteAuthorsView(ListView):
-    """View favorite authors"""
+    """View favorite authors."""
     model = Follow
-    template_name = 'favorite.html'
-    context_object_name = 'posts'
+    template_name = "favorite.html"
+    context_object_name = "posts"
 
     def get_queryset(self):
         query = super().get_queryset()
@@ -108,27 +112,12 @@ class FavoriteAuthorsView(ListView):
 
 
 class ReadPostView(LoginRequiredMixin, View):
-    """View for mark posts"""
+    """View for mark posts."""
     def get(self, request, *args, **kwargs):
-        post = get_object_or_404(Post, pk=kwargs['pk'])
-        print(post)
+        post = get_object_or_404(Post, pk=kwargs["pk"])
         if request.user not in post.read_post.all():
             post.read_post.add(request.user)
 
         else:
             post.read_post.remove(request.user)
-        return redirect('post_detail', pk=self.kwargs['pk'])
-
-#
-# class UnReadPostView(LoginRequiredMixin, View):
-#     """View for mark posts"""
-#     def get(self, request, *args, **kwargs):
-#         subscribe = Post.objects.filter(
-#             user=request.user,
-#             author=get_object_or_404(
-#                 User,
-#                 username=self.kwargs['username'])
-#         )
-#         subscribe.delete()
-#
-#         return redirect('post_detail', pk=self.kwargs['pk'])
+        return redirect("post_detail", pk=self.kwargs["pk"])

@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db.models import UniqueConstraint, CheckConstraint, Q, F
 from django.db import models
-from django.urls import reverse
 
 User = get_user_model()
 
@@ -13,7 +12,7 @@ class Post(models.Model):
     title = models.CharField(max_length=60, verbose_name='Заголовок')
     text = models.TextField(verbose_name="Текст")
     pub_date = models.DateTimeField("Дата публикации", auto_now_add=True)
-    read_post = models.ManyToManyField(User, related_name='read_post', blank=True)
+    read_post = models.ManyToManyField(User, related_name="read_post", blank=True)
 
     class Meta:
         ordering = ["-pub_date"]
@@ -43,6 +42,6 @@ class Follow(models.Model):
                 fields=["user", "author"],
                 name='unique_follow'),
             CheckConstraint(
-                check=~Q(user=F('author')),
-                name='user_not_author',
+                check=~Q(user=F("author")),
+                name="user_not_author",
             )]
