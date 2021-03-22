@@ -16,4 +16,4 @@ jobs:
     - name: Install dependencies
       run: pip install flake8 pytest
     - name: Test flake8
-      run: flake8 posts/ --exclude Blog/, posts/migrations/
+      run: flake8 posts/ --exclude Blog/,posts/migrations/
