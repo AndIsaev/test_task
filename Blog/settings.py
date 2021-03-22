@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -25,7 +26,15 @@ SECRET_KEY = 'o-ti9(gr-+^x!ceu+lg%u+q068utd5e-z354w-x4r$g^x%ly(l'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*',]
+
+EMAIL_HOST = "smtp.mail.ru"
+EMAIL_PORT = 465
+EMAIL_HOST_USER = "andrenomer@mail.ru"
+EMAIL_HOST_PASSWORD = "Adidas!123"
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+
 
 
 # Application definition

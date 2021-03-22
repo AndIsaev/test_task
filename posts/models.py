@@ -12,7 +12,8 @@ class Post(models.Model):
     title = models.CharField(max_length=60, verbose_name='Заголовок')
     text = models.TextField(verbose_name="Текст")
     pub_date = models.DateTimeField("Дата публикации", auto_now_add=True)
-    read_post = models.ManyToManyField(User, related_name="read_post", blank=True)
+    read_post = models.ManyToManyField(
+        User, related_name="read_post", blank=True)
 
     class Meta:
         ordering = ["-pub_date"]
@@ -20,7 +21,7 @@ class Post(models.Model):
         verbose_name_plural = "Посты"
 
     def __str__(self):
-        return  f"{self.author} ({self.title}) ({self.text})"
+        return f"{self.author} ({self.title}) ({self.text})"
 
 
 class Follow(models.Model):
@@ -31,7 +32,6 @@ class Follow(models.Model):
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="following"
     )
-
 
     class Meta:
         verbose_name = "Подписка"
