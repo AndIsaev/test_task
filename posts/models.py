@@ -12,7 +12,7 @@ class Post(models.Model):
                                related_name="posts", verbose_name="Автор")
     title = models.CharField(max_length=60, verbose_name='Заголовок')
     text = models.TextField(verbose_name="Текст")
-    pub_date = models.DateTimeField("Дата публикации", auto_now=True)
+    pub_date = models.DateTimeField("Дата публикации", auto_now_add=True)
     read_post = models.ManyToManyField(User, related_name='read_post', blank=True)
 
     class Meta:

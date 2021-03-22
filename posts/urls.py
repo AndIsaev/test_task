@@ -7,7 +7,8 @@ from .views import (
     PostDeleteView,
     FollowView,
     UnFollowView,
-    FavoriteAuthors
+    FavoriteAuthorsView,
+    ReadPostView
 )
 
 urlpatterns = [
@@ -18,6 +19,7 @@ urlpatterns = [
     path('<str:username>/unfollow/', UnFollowView.as_view(), name='unfollow'),
     path('post/<int:pk>', PostDetailView.as_view(), name='post_detail'),
     path('post/<int:pk>/delete_post/', PostDeleteView.as_view(), name='post_delete'),
-    path('<str:username>', FavoriteAuthors.as_view(), name="favorite")
+    path('<str:username>', FavoriteAuthorsView.as_view(), name="favorite"),
+    path('post/<int:pk>/read', ReadPostView.as_view(), name='read_post'),
 
 ]

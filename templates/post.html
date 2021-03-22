@@ -19,7 +19,15 @@
         <div class="d-flex justify-content-between align-items-center">
 
             <small class="text-muted">{{ post.pub_date }}</small>
-
+            <small>
+                {% if request.user in post.read_post.all %}
+                    <a class="btn btn-outline-warning" href="{% url 'read_post' pk=post.id %}"
+                               role="button">Отметить как непрочитанное</a>
+                {% else %}
+                    <a class="btn btn-outline-success" href="{% url 'read_post' pk=post.id %}"
+                               role="button">Прочитать</a>
+                {% endif %}
+            </small>
             <div class="col-md-2 text-right">
                 {% if user == post.author %}
                 <form method="post" action="{% url 'post_delete' pk=post.id %}" method="post">

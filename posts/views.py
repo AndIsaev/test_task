@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import (
     ListView,
@@ -62,7 +62,6 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
     """Delete post, permission only for author"""
     model = Post
     template_name = 'post.html'
-    form_class = PostForm
     success_url = reverse_lazy('index')
 
 
@@ -95,15 +94,41 @@ class UnFollowView(LoginRequiredMixin, View):
         return redirect("blog", username=self.kwargs['username'])
 
 
-class FavoriteAuthors(ListView):
+class FavoriteAuthorsView(ListView):
     """View favorite authors"""
     model = Follow
     template_name = 'favorite.html'
     context_object_name = 'posts'
 
     def get_queryset(self):
-        q = super().get_queryset()
-        authors = q.filter(user=self.request.user).values_list("author")
+        query = super().get_queryset()
+        authors = query.filter(user=self.request.user).values_list("author")
         posts = Post.objects.filter(author__in=authors)
-
         return posts
+
+
+class ReadPostView(LoginRequiredMixin, View):
+    """View for mark posts"""
+    def get(self, request, *args, **kwargs):
+        post = get_object_or_404(Post, pk=kwargs['pk'])
+        print(post)
+        if request.user not in post.read_post.all():
+            post.read_post.add(request.user)
+
+        else:
+            post.read_post.remove(request.user)
+        return redirect('post_detail', pk=self.kwargs['pk'])
+
+#
+# class UnReadPostView(LoginRequiredMixin, View):
+#     """View for mark posts"""
+#     def get(self, request, *args, **kwargs):
+#         subscribe = Post.objects.filter(
+#             user=request.user,
+#             author=get_object_or_404(
+#                 User,
+#                 username=self.kwargs['username'])
+#         )
+#         subscribe.delete()
+#
+#         return redirect('post_detail', pk=self.kwargs['pk'])
