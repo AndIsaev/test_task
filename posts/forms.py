@@ -13,11 +13,6 @@ class PostForm(forms.ModelForm):
         }
 
 
-# class FollowForm(forms.ModelForm):
-#     class Meta:
-#         model = Follow
-#         fields = ["user"]
-
 class EmailForm(forms.Form):
     subject = forms.CharField(
         label='Тема',

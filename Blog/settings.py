@@ -30,8 +30,8 @@ ALLOWED_HOSTS = ['*',]
 
 EMAIL_HOST = "smtp.mail.ru"
 EMAIL_PORT = 465
-EMAIL_HOST_USER = "andrenomer@mail.ru"
-EMAIL_HOST_PASSWORD = "Adidas!123"
+EMAIL_HOST_USER = ""
+EMAIL_HOST_PASSWORD = ""
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 
