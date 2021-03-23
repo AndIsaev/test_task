@@ -95,6 +95,14 @@ python3 manage.py shell
 >>> quit()
 python manage.py loaddata dump.json
 ```
+админ в базе
+
+```
+user: batman
+password: batman
+```
+
+
 или
 
 Для создания нового суперпользователя можно выполнить команду:
