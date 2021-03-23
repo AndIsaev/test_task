@@ -20,8 +20,9 @@ from . import settings
 
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
     path("", include("posts.urls")),
+    path("admin/", admin.site.urls),
+    path("auth/", include('django.contrib.auth.urls')),
 ]
 
 

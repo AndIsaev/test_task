@@ -11,14 +11,14 @@ from .forms import PostForm
 from .models import Post, User, Follow
 
 
-class IndexView(ListView):
+class IndexView(LoginRequiredMixin, ListView):
     """Main page."""
     model = Post
     template_name = "index.html"
     context_object_name = "posts"
 
 
-class PostDetailView(DetailView):
+class PostDetailView(LoginRequiredMixin, DetailView):
     """View one post."""
     model = Post
     context_object_name = "post"
@@ -41,7 +41,7 @@ class CreateNewPost(LoginRequiredMixin, CreateView):
         return reverse("post_detail", kwargs={"pk": self.object.id})
 
 
-class BlogViewList(ListView):
+class BlogViewList(LoginRequiredMixin, ListView):
     """Personal blog for author."""
     model = User
     template_name = "blog.html"
@@ -98,7 +98,7 @@ class UnFollowView(LoginRequiredMixin, View):
         return redirect("blog", username=self.kwargs["username"])
 
 
-class FavoriteAuthorsView(ListView):
+class FavoriteAuthorsView(LoginRequiredMixin, ListView):
     """View favorite authors."""
     model = Follow
     template_name = "favorite.html"
