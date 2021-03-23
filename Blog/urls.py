@@ -15,15 +15,19 @@ Including another URLconf
 """
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.auth import views
 from django.urls import path, include
 from . import settings
 
 
 urlpatterns = [
-    path("", include("posts.urls")),
+    # path("accounts/", include('django.contrib.auth.urls')),
+    path('accounts/login/', views.LoginView.as_view(), name='login'),
+    path('accounts/logout/', views.LogoutView.as_view(), name='logout'),
     path("admin/", admin.site.urls),
-    path("auth/", include('django.contrib.auth.urls')),
-]
+    path("", include("posts.urls")),
 
+
+]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

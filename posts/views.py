@@ -11,7 +11,7 @@ from .forms import PostForm
 from .models import Post, User, Follow
 
 
-class IndexView(LoginRequiredMixin, ListView):
+class IndexView(ListView):
     """Main page."""
     model = Post
     template_name = "index.html"
