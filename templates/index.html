@@ -3,11 +3,11 @@
 {% block header %}Последние обновления на сайте{% endblock %}
 {% block content %}
     <div class="container">
-    {% include "menu.html" with index=True %}
+    {% include "includes/menu.html" with index=True %}
         <h1>Последние обновления</h1>
 
         {% for post in posts %}
-            {% include "post_item.html" %}
+            {% include "includes/post_item.html" %}
         {% endfor %}
 
     </div>

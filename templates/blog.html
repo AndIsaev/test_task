@@ -3,11 +3,11 @@
 {% block title %}Блог автора {{ author.username }}{% endblock %}
 
 {% block content %}
-{% include "author.html" %}
+{% include "includes/author.html" %}
 
     {% for post in posts %}
 
-        {% include "post_item.html" %}
+        {% include "includes/post_item.html" %}
 
     {% endfor %}
 

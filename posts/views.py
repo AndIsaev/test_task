@@ -22,7 +22,7 @@ class PostDetailView(LoginRequiredMixin, DetailView):
     """View one post."""
     model = Post
     context_object_name = "post"
-    template_name = "post.html"
+    template_name = "includes/post.html"
 
 
 class CreateNewPost(LoginRequiredMixin, CreateView):
@@ -61,7 +61,7 @@ class BlogViewList(LoginRequiredMixin, ListView):
 class PostDeleteView(LoginRequiredMixin, DeleteView):
     """Delete post, permission only for author."""
     model = Post
-    template_name = "post.html"
+    template_name = "includes/post.html"
     success_url = reverse_lazy("index")
 
 
